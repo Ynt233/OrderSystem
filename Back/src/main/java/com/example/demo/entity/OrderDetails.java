@@ -9,8 +9,8 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-@TableName("t_order")
-public class Order {
+@TableName("t_order_details")
+public class OrderDetails {
     @TableId(type = IdType.AUTO)
     private Integer id;
 
@@ -25,7 +25,7 @@ public class Order {
 
     private String tip;
 
-    public Order(Integer id, String foodName, BigDecimal price, String type,Integer amount, String tip) {
+    public OrderDetails(Integer id, String foodName, BigDecimal price, String type, Integer amount, String tip) {
         this.id = id;
         this.foodName = foodName;
         this.price = price;

@@ -14,14 +14,21 @@
       <el-collapse-item title="订单1" name="1">
         <el-table
             v-loading="loading"
+            ref="multipleTable"
+            @selection-change="handleSelectionChange"
             :data="tableData"
             border
             stripe
             style="width: 100%">
           <el-table-column
+              type="selection"
+              width="55">
+          </el-table-column>
+          <el-table-column
               prop="id"
               label="ID"
-              sortable>
+              sortable
+          v-if="user.role === 1">
           </el-table-column>
           <el-table-column
               prop="foodName"
@@ -39,23 +46,13 @@
               prop="amount"
               label="数量">
             <template #default="scope">
-              <el-input-number v-model="scope.row.amount" @change="handleChange(scope.row)" :min="1" :max="100" label="描述文字"></el-input-number>
+              <el-input-number name="cart" v-model="scope.row.amount" @change="handleChange(scope.row)" :min="1" :max="100" label="描述文字"></el-input-number>
             </template>
           </el-table-column>
           <el-table-column
               prop="tip"
               label="备注">
           </el-table-column>
-<!--          <el-table-column-->
-<!--              label="封面">-->
-<!--            <template #default="scope">-->
-<!--              <el-image-->
-<!--                  style="width: 100px; height: 100px"-->
-<!--                  :src="scope.row.cover"-->
-<!--                  :preview-src-list="[scope.row.cover]">-->
-<!--              </el-image>-->
-<!--            </template>-->
-<!--          </el-table-column>-->
           <!--      <el-table-column-->
           <!--          prop="createTime"-->
           <!--          label="时间">-->
@@ -68,10 +65,15 @@
                   <el-button size="mini" type="danger">删除</el-button>
                 </template>
               </el-popconfirm>
-<!--              <el-button size="mini" @order="handleOrder(scope.row.id)">下单</el-button>-->
             </template>
           </el-table-column>
         </el-table>
+        <el-divider></el-divider>
+        <div style="margin: 10px 0">
+          <el-svg-icon><goods /></el-svg-icon>
+          <p>共计：<span>{{this.total_price}}元</span> </p>
+          <el-button @click="dialogFormAdd" style="float: right; margin-top: -25px ;margin-right: 75px" type="primary">结算</el-button>
+        </div>
       </el-collapse-item>
     </el-collapse>
 
@@ -119,7 +121,6 @@
           </span>
         </template>
       </el-dialog>
-
     </div>
   </div>
 </template>
@@ -141,10 +142,13 @@ export default {
       form: {},
       dialogVisible: false,
       search: '',
+      textarea: {},
       currentPage: 1,
       pageSize: 10,
       total: 0,
+      total_price: 0,
       tableData: [],
+      multipleSelection: [],
       activeNames: ['1'],
       amount: 1,
       filesUploadUrl: "http://" + window.server.filesUploadUrl + ":9090/files/upload"
@@ -167,9 +171,21 @@ export default {
     //   console.log(res)
     //   this.form.cover = res.data
     // },
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+      var total = 0;
+      for (var i = 0; i < this.multipleSelection.length; i++){
+        var halo = this.multipleSelection[i];
+        //console.log(halo);
+        total = total + halo.price * halo.amount;
+      }
+      this.total_price = total;
+      console.log(this.total_price);
+      // console.log(val)
+    },
     load() {
       this.loading = true
-      request.get("/order", {
+      request.get("/orderDetails", {
         params: {
           pageNum: this.currentPage,
           pageSize: this.pageSize,
@@ -181,6 +197,9 @@ export default {
         this.total = res.data.total
       })
     },
+    dialogFormAdd(){
+
+    },
     add() {
       this.dialogVisible = true
       this.form = {}
@@ -190,7 +209,7 @@ export default {
     },
     save() {
       if (this.form.id) {  // 更新
-        request.put("/order", this.form).then(res => {
+        request.put("/orderDetails", this.form).then(res => {
           console.log(res)
           if (res.code === '0') {
             this.$message({
@@ -207,7 +226,7 @@ export default {
           this.dialogVisible = false  // 关闭弹窗
         })
       }  else {  // 新增
-        request.post("/order", this.form).then(res => {
+        request.post("/orderDetails", this.form).then(res => {
           console.log(res)
           if (res.code === '0') {
             this.$message({
@@ -239,7 +258,7 @@ export default {
     },
     handleDelete(id) {
       console.log(id)
-      request.delete("/order/" + id).then(res => {
+      request.delete("/orderDetails/" + id).then(res => {
         if (res.code === '0') {
           this.$message({
             type: "success",
@@ -254,39 +273,11 @@ export default {
         this.load()  // 删除之后重新加载表格的数据
       })
     },
-    // handleOrder(id){
-    //   console.log(id)
-    //   request.post("/order", this.form).then(res => {
-    //         console.log(res)
-    //         if (res.code === '0') {
-    //           this.$message({
-    //             type: "success",
-    //             message: "新增成功"
-    //           })
-    //         } else {
-    //           this.$message({
-    //             type: "error",
-    //             message: res.msg
-    //           })
-    //         }
-    //     })
-    // },
     handleChange(row) {
       console.log(row)
-      request.post("/order", row).then(res => {
-        console.log(res)
-        if (res.code === '0') {
-          this.$message({
-            type: "success",
-            message: "更新成功"
-          })
-        } else {
-          this.$message({
-            type: "error",
-            message: res.msg
-          })
-        }
-        this.load() // 刷新表格的数据
+      request.put("/orderDetails", row).then(res => {
+          console.log(res)
+      this.load() // 刷新表格的数据
       })
     },
     handleSizeChange(pageSize) {   // 改变当前每页的个数触发

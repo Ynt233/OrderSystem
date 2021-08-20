@@ -5,23 +5,19 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.common.Result;
-import com.example.demo.entity.Order;
+import com.example.demo.entity.OrderDetails;
 import com.example.demo.mapper.OrderMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/order")
+@RequestMapping("/orderDetails")
 public class OrderController {
     @Resource
     OrderMapper orderMapper;
@@ -31,36 +27,45 @@ public class OrderController {
 
     // 新增一条订单信息
     @PostMapping
-    public Result<?> save(@RequestBody Order order){
-        List row = jdbcTemplate.queryForList("select * from ordersystem.t_order;");
+    public Result<?> save(@RequestBody OrderDetails orderDetails){
+        List row = jdbcTemplate.queryForList("select * from ordersystem.t_order_details;");
         Iterator it = row.iterator();
         System.out.println("我执行了！");
-        while (it.hasNext() || !it.hasNext()){
+        //如果表里面没有东西就直接插入
+        if(!it.hasNext()){
+            System.out.println("我插了！");
+            orderMapper.insert(orderDetails);
+        }
+        //如果表里有数据则查找需要更新的数据（通过名字）
+        while (it.hasNext()){
             Map foodMap = (Map) it.next();
-//            System.out.println(foodMap.get("amount")+"\t");
-            if (foodMap.get("food_name").equals(order.getFoodName())){
+            System.out.println(foodMap.get("amount")+"\t");
+            if (foodMap.get("food_name").equals(orderDetails.getFoodName())){
                 String num = foodMap.get("amount").toString();
                 Integer n = Integer.parseInt(num);
-                order.setAmount(order.getAmount() + n);
-                String sql = "update ordersystem.t_order set `amount`=? where food_name=?";
-//                food_name=?, type=?, price=?,
-//                order.getFoodName(), order.getType(), order.getPrice(),
-                Object foodObj[] = new Object[] {order.getAmount(), order.getFoodName()};
+                orderDetails.setAmount(orderDetails.getAmount() + n);
+                String sql = "update ordersystem.t_order_details set `amount`=? where food_name=?";
+                Object foodObj[] = new Object[] {orderDetails.getAmount(), orderDetails.getFoodName()};
                 jdbcTemplate.update(sql,foodObj);
                 break;
             }else {
                 System.out.println("我插了！");
-                orderMapper.insert(order);
+                orderMapper.insert(orderDetails);
                 break;
             }
         }
+//        System.out.println(name);
+//        if (!name.equals("cart")){
+
+//        }
+
         return Result.success();
     }
 
     // 编辑(更新)用户信息
     @PutMapping
-    public Result<?> update(@RequestBody Order order){
-        orderMapper.updateById(order);
+    public Result<?> update(@RequestBody OrderDetails orderDetails){
+        orderMapper.updateById(orderDetails);
         return Result.success();
     }
 
@@ -85,11 +90,11 @@ public class OrderController {
     public Result<?> findPage(@RequestParam(defaultValue = "1") Integer pageNum,
                               @RequestParam(defaultValue = "10") Integer pageSize,
                               @RequestParam(defaultValue = "") String search){
-        LambdaQueryWrapper<Order> wrapper = Wrappers.<Order>lambdaQuery();
+        LambdaQueryWrapper<OrderDetails> wrapper = Wrappers.<OrderDetails>lambdaQuery();
         if(StrUtil.isNotBlank(search)){
-            wrapper.like(Order::getFoodName, search);
+            wrapper.like(OrderDetails::getFoodName, search);
         }
-        Page<Order> orderDetailsPage = orderMapper.selectPage(new Page<>(pageNum,pageSize), wrapper);
+        Page<OrderDetails> orderDetailsPage = orderMapper.selectPage(new Page<>(pageNum,pageSize), wrapper);
         return Result.success(orderDetailsPage);
     }
 }

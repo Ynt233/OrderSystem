@@ -43,12 +43,14 @@
           v-model="table.amount"
           label="数量">
         <template #default="scope">
-          <el-input-number v-model="scope.row.amount" @change="handleChange" :min="1" :max="100"></el-input-number>
+          <el-input-number  v-model="scope.row.amount" :min="1" :max="100"></el-input-number>
         </template>
       </el-table-column>
 <!--      <el-table-column-->
-<!--          prop="createTime"-->
-<!--          label="时间">-->
+<!--          prop="tip"-->
+<!--          label="备注"-->
+<!--      #default="scope">-->
+<!--        <el-input v-model="scope.row.tip">无</el-input>-->
 <!--      </el-table-column>-->
       <el-table-column
           label="封面">
@@ -135,6 +137,7 @@ export default {
       loading: true,
       form: {},
       table:{},
+      amount: 1,
       dialogVisible: false,
       search: '',
       currentPage: 1,
@@ -251,12 +254,12 @@ export default {
       })
     },
     handleOrder(row){
-      request.post("/order", row).then(res => {
+      request.post("/orderDetails", row).then(res => {
         console.log(res)
         if (res.code === '0') {
           this.$message({
             type: "success",
-            message: "新增成功"
+            message: "下单成功！"
           })
         } else {
           this.$message({
