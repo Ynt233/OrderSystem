@@ -70,8 +70,9 @@
         </el-table>
         <el-divider></el-divider>
         <div style="margin: 10px 0">
-          <el-svg-icon><goods /></el-svg-icon>
-          <p>共计：<span>{{this.total_price}}元</span> </p>
+<!--          <el-svg-icon><goods /></el-svg-icon>-->
+          <label>共计：</label>
+          <span>{{this.total_price}}元</span>
           <el-button @click="dialogFormAdd" style="float: right; margin-top: -25px ;margin-right: 75px" type="primary">结算</el-button>
         </div>
       </el-collapse-item>

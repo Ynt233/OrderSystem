@@ -14,9 +14,34 @@ const routes = [
                 component: () => import("../views/UserManage"),
             },
             {
-                path: 'food',
-                name: 'Food',
-                component: () => import("../views/Food"),
+                path: 'mlsw',
+                name: 'Food_mlsw',
+                component: () => import("../views/Food_mlsw"),
+            },
+            {
+              path: 'rxcs',
+              name: 'Food_rxcs',
+              component: () => import("../views/Food_rxcs")
+            },
+            {
+                path: 'jxcs',
+                name: 'Food_jxcs',
+                component: () => import("../views/Food_jxcs")
+            },
+            {
+                path: 'zfm',
+                name: 'Food_zfm',
+                component: () => import("../views/Food_zfm")
+            },
+            {
+                path: 'zbdp',
+                name: 'Food_zbdp',
+                component: () => import("../views/Food_zbdp")
+            },
+            {
+                path: 'yl',
+                name: 'Food_yl',
+                component: () => import("../views/Food_yl")
             },
             {
                 path: 'personManage',

@@ -14,6 +14,7 @@
         v-loading="loading"
         :data="tableData"
         :model="table"
+        v-model="foodType"
         border
         stripe
         style="width: 100%">
@@ -21,6 +22,7 @@
           prop="id"
           label="ID"
           v-model="table.id"
+          v-if="user.role === 1"
           sortable>
       </el-table-column>
       <el-table-column
@@ -52,16 +54,16 @@
 <!--      #default="scope">-->
 <!--        <el-input v-model="scope.row.tip">无</el-input>-->
 <!--      </el-table-column>-->
-      <el-table-column
-          label="封面">
-        <template #default="scope">
-          <el-image
-              style="width: 100px; height: 100px"
-              :src="scope.row.cover"
-              :preview-src-list="[scope.row.cover]">
-          </el-image>
-        </template>
-      </el-table-column>
+<!--      <el-table-column-->
+<!--          label="封面">-->
+<!--        <template #default="scope">-->
+<!--          <el-image-->
+<!--              style="width: 100px; height: 100px"-->
+<!--              :src="scope.row.cover"-->
+<!--              :preview-src-list="[scope.row.cover]">-->
+<!--          </el-image>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
       <el-table-column label="操作">
         <template #default="scope">
           <el-button size="mini" @click="handleEdit(scope.row)" v-if="user.role === 1">编辑</el-button>
@@ -70,7 +72,7 @@
               <el-button size="mini" type="danger">删除</el-button>
             </template>
           </el-popconfirm>
-          <el-button size="mini" @click="handleOrder(scope.row)">下单</el-button>
+          <el-button size="mini" type="primary" @click="handleOrder(scope.row)">下单</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -127,7 +129,7 @@
 import request from "../utils/request";
 
 export default {
-  name: 'Food',
+  name: 'Food_zbdp',
   components: {
 
   },
@@ -140,6 +142,7 @@ export default {
       amount: 1,
       dialogVisible: false,
       search: '',
+      foodType: '滋补炖品',
       currentPage: 1,
       pageSize: 10,
       total: 0,
@@ -169,7 +172,8 @@ export default {
         params: {
           pageNum: this.currentPage,
           pageSize: this.pageSize,
-          search: this.search
+          search: this.search,
+          foodType: this.foodType
         }
       }).then(res => {
         this.loading = false

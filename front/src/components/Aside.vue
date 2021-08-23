@@ -10,11 +10,12 @@
         <el-menu-item index="/user">人员管理</el-menu-item>
       </el-submenu>
       <el-menu-item index="/order">订单管理</el-menu-item>
-      <el-menu-item index="/food">热销菜式</el-menu-item>
-      <el-menu-item index="/personManage">今旬菜式</el-menu-item>
-      <el-menu-item index="/personManage">粥粉面</el-menu-item>
-      <el-menu-item index="/personManage">靓汤</el-menu-item>
-      <el-menu-item index="/personManage">饮料</el-menu-item>
+      <el-menu-item index="/mlsw">明炉烧味</el-menu-item>
+      <el-menu-item index="/rxcs">热销菜式</el-menu-item>
+      <el-menu-item index="/jxcs">今旬菜式</el-menu-item>
+      <el-menu-item index="/zfm">粥粉面</el-menu-item>
+      <el-menu-item index="/zbdp">靓汤</el-menu-item>
+      <el-menu-item index="/yl">饮料</el-menu-item>
     </el-menu>
   </div>
 </template>

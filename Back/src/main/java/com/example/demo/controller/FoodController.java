@@ -19,14 +19,14 @@ public class FoodController {
     @Resource
     FoodMapper foodMapper;
 
-    // 新增一条用户信息
+    // 新增一条菜品信息
     @PostMapping
     public Result<?> save(@RequestBody Food food){
         foodMapper.insert(food);
         return Result.success();
     }
 
-    // 编辑(更新)用户信息
+    // 编辑(更新)菜品信息
     @PutMapping
     public Result<?> update(@RequestBody Food food){
         foodMapper.updateById(food);
@@ -53,12 +53,36 @@ public class FoodController {
     @GetMapping
     public Result<?> findPage(@RequestParam(defaultValue = "1") Integer pageNum,
                               @RequestParam(defaultValue = "10") Integer pageSize,
-                              @RequestParam(defaultValue = "") String search){
+                              @RequestParam(defaultValue = "") String search,
+                              @RequestParam(defaultValue = "") String foodType,
+                              @RequestParam(defaultValue = "") Integer currentDate){
         LambdaQueryWrapper<Food> wrapper = Wrappers.<Food>lambdaQuery();
+        String early = "1至10日菜式";
+        String middle = "11至20日菜式";
+        String late = "21至月底菜式";
+        String type = "面";
+        if (!foodType.equals("")){
+            if (foodType.equals("粥粉面")){
+                wrapper.like(Food::getType, type);
+            }else {
+                wrapper.like(Food::getType, foodType);
+            }
+
+        }else{
+            if(currentDate >= 1 && currentDate <= 10){
+                wrapper.like(Food::getType, early);
+            }else if (currentDate >= 11 && currentDate <= 20){
+                wrapper.like(Food::getType, middle);
+            }
+            else if (currentDate >= 21 && currentDate <= 31){
+                wrapper.like(Food::getType, late);
+            }
+        }
+        Page<Food> foodPage = foodMapper.selectPage(new Page<>(pageNum,pageSize), wrapper);
         if(StrUtil.isNotBlank(search)){
             wrapper.like(Food::getFoodName, search);
         }
-        Page<Food> foodPage = foodMapper.selectPage(new Page<>(pageNum,pageSize), wrapper);
+        foodPage = foodMapper.selectPage(new Page<>(pageNum,pageSize), wrapper);
         return Result.success(foodPage);
     }
 }

@@ -18,7 +18,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/orderDetails")
-public class OrderController {
+public class OrderDetailsController {
     @Resource
     OrderMapper orderMapper;
 
