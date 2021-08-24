@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.common.Result;
 import com.example.demo.entity.OrderDetails;
-import com.example.demo.mapper.OrderMapper;
+import com.example.demo.mapper.OrderDetailsMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +20,7 @@ import java.util.Map;
 @RequestMapping("/orderDetails")
 public class OrderDetailsController {
     @Resource
-    OrderMapper orderMapper;
+    OrderDetailsMapper orderDetailsMapper;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -33,13 +33,11 @@ public class OrderDetailsController {
         System.out.println("我执行了！");
         //如果表里面没有东西就直接插入
         if(!it.hasNext()){
-            System.out.println("我插了！");
-            orderMapper.insert(orderDetails);
+            orderDetailsMapper.insert(orderDetails);
         }
         //如果表里有数据则查找需要更新的数据（通过名字）
         while (it.hasNext()){
             Map foodMap = (Map) it.next();
-            System.out.println(foodMap.get("amount")+"\t");
             if (foodMap.get("food_name").equals(orderDetails.getFoodName())){
                 String num = foodMap.get("amount").toString();
                 Integer n = Integer.parseInt(num);
@@ -49,41 +47,35 @@ public class OrderDetailsController {
                 jdbcTemplate.update(sql,foodObj);
                 break;
             }else {
-                System.out.println("我插了！");
-                orderMapper.insert(orderDetails);
+                orderDetailsMapper.insert(orderDetails);
                 break;
             }
         }
-//        System.out.println(name);
-//        if (!name.equals("cart")){
-
-//        }
-
         return Result.success();
     }
 
     // 编辑(更新)用户信息
     @PutMapping
     public Result<?> update(@RequestBody OrderDetails orderDetails){
-        orderMapper.updateById(orderDetails);
+        orderDetailsMapper.updateById(orderDetails);
         return Result.success();
     }
 
     //通过id进行删除操作
     @DeleteMapping("/{id}")
     public Result<?> update(@PathVariable Long id){
-        orderMapper.deleteById(id);
+        orderDetailsMapper.deleteById(id);
         return Result.success();
     }
 
     @GetMapping("/{id}")
     public Result<?> getById(@PathVariable Long id) {
-        return Result.success(orderMapper.selectById(id));
+        return Result.success(orderDetailsMapper.selectById(id));
     }
 
     @GetMapping("/all")
     public Result<?> findAll() {
-        return Result.success(orderMapper.selectList(null));
+        return Result.success(orderDetailsMapper.selectList(null));
     }
 
     @GetMapping
@@ -94,7 +86,7 @@ public class OrderDetailsController {
         if(StrUtil.isNotBlank(search)){
             wrapper.like(OrderDetails::getFoodName, search);
         }
-        Page<OrderDetails> orderDetailsPage = orderMapper.selectPage(new Page<>(pageNum,pageSize), wrapper);
+        Page<OrderDetails> orderDetailsPage = orderDetailsMapper.selectPage(new Page<>(pageNum,pageSize), wrapper);
         return Result.success(orderDetailsPage);
     }
 }

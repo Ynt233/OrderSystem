@@ -54,9 +54,19 @@ const routes = [
                 component: () => import("../views/Person"),
             },
             {
+                path: 'orderDetails',
+                name: 'OrderDetails',
+                component: () => import("../views/OrderDetails")
+            },
+            {
                 path: 'order',
                 name: 'Order',
                 component: () => import("../views/Order")
+            },
+            {
+                path: 'account',
+                name: 'Account',
+                component: () => import("../views/Account")
             }
         ]
     },

@@ -29,7 +29,7 @@
               prop="id"
               label="ID"
               sortable
-              v-if="user.role === 1">
+          v-if="user.role === 1">
           </el-table-column>
           <el-table-column
               prop="foodName"
@@ -71,11 +71,10 @@
         </el-table>
         <el-divider></el-divider>
         <div style="margin: 10px 0">
-          <!--          <el-svg-icon><goods /></el-svg-icon>-->
+<!--          <el-svg-icon><goods /></el-svg-icon>-->
           <label>共计：</label>
           <span>{{this.total_price}}元</span>
           <el-button @click="dialogFormAdd" style="float: right; margin-top: -25px ;margin-right: 75px" type="primary">结算</el-button>
-          <el-button @click="backward" style="float: right; margin-top: -25px ;margin-right: 75px" type="primary">返回</el-button>
         </div>
       </el-collapse-item>
     </el-collapse>
@@ -90,6 +89,40 @@
           layout="total, sizes, prev, pager, next, jumper"
           :total="total">
       </el-pagination>
+
+      <el-dialog title="提示" v-model="dialogVisible" width="30%">
+        <el-form :model="form" label-width="120px">
+<!--          <el-form-item label="封面">-->
+<!--            <el-upload ref="upload" :action="filesUploadUrl" :on-success="filesUploadSuccess">-->
+<!--              <el-button type="primary">点击上传</el-button>-->
+<!--            </el-upload>-->
+<!--          </el-form-item>-->
+          <el-form-item label="商品名称" v-if="user.role === 1">
+            <el-input v-model="form.foodName" style="width: 80%"></el-input>
+          </el-form-item>
+          <el-form-item label="商品类型" v-if="user.role === 1">
+            <el-input v-model="form.type" style="width: 80%"></el-input>
+          </el-form-item>
+          <el-form-item label="商品价格" v-if="user.role === 1">
+            <el-input v-model="form.price" style="width: 80%"></el-input>
+          </el-form-item>
+          <el-form-item label="数量" v-if="user.role === 1">
+            <el-input v-model="form.amount" style="width: 80%"></el-input>
+          </el-form-item>
+          <el-form-item label="备注">
+            <el-input v-model="form.tip" type="textarea" :autosize="{ minRows: 0, maxRows: 50}" maxlength="50" style="width: 80%; height: 150%"></el-input>
+          </el-form-item>
+          <!--          <el-form-item label="时间">-->
+          <!--            <el-date-picker v-model="form.createTime" value-format="YYYY-MM-DD" type="date" style="width: 80%" clearable></el-date-picker>-->
+          <!--          </el-form-item>-->
+        </el-form>
+        <template #footer>
+          <span class="dialog-footer">
+            <el-button @click="dialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="save">确 定</el-button>
+          </span>
+        </template>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -100,7 +133,7 @@
 import request from "../utils/request";
 
 export default {
-  name: 'Order',
+  name: 'OrderDetails',
   components: {
 
   },
@@ -112,7 +145,9 @@ export default {
       dialogVisible: false,
       search: '',
       textarea: {},
+      selected: [],
       currentPage: 1,
+      currentDate: '',
       pageSize: 10,
       total: 0,
       total_price: 0,
@@ -132,8 +167,8 @@ export default {
         this.user = res.data
       }
     })
-
-    this.load()
+    this.load();
+    this.addDate();
   },
   methods: {
     // filesUploadSuccess(res) {
@@ -142,7 +177,7 @@ export default {
     // },
     load() {
       this.loading = true
-      request.get("/order", {
+      request.get("/orderDetails", {
         params: {
           pageNum: this.currentPage,
           pageSize: this.pageSize,
@@ -159,14 +194,43 @@ export default {
       var total = 0;
       for (var i = 0; i < this.multipleSelection.length; i++){
         var halo = this.multipleSelection[i];
-        //console.log(halo);
+        // console.log(halo);
         total = total + halo.price * halo.amount;
+        this.selected[i] = halo;
       }
       this.total_price = total;
-      console.log(this.total_price);
-      // console.log(val)
+      // console.log(this.total_price);
+      // console.log(this.selected);
+    },
+    addDate(){
+      const nowDate = new Date();
+      const date = {
+        year: nowDate.getFullYear(),
+        month: nowDate.getMonth() + 1,
+        date: nowDate.getDate(),
+      }
+      const newmonth = date.month>10?date.month:'0'+date.month;
+      const day = date.date>10?date.date:'0'+date.date;
+      this.currentDate = date.year + '-' + newmonth + '-' + day;
+      console.log(this.currentDate);
     },
     dialogFormAdd(){
+      request.post("/order/getDetails",this.selected).then(res => {
+        // sessionStorage.setItem("orderDetails",JSON.stringify(res.data));
+        // console.log(JSON.stringify(res.data));
+        this.$router.push("/order");
+        if (res.code === '0') {
+          this.$message({
+            type: "success",
+            message: "新增成功"
+          })
+        } else {
+          this.$message({
+            type: "error",
+            message: res.msg
+          })
+        }
+      })
 
     },
     add() {
@@ -178,7 +242,7 @@ export default {
     },
     save() {
       if (this.form.id) {  // 更新
-        request.put("/order", this.form).then(res => {
+        request.put("/orderDetails", this.form).then(res => {
           console.log(res)
           if (res.code === '0') {
             this.$message({
@@ -195,7 +259,7 @@ export default {
           this.dialogVisible = false  // 关闭弹窗
         })
       }  else {  // 新增
-        request.post("/order", this.form).then(res => {
+        request.post("/orderDetails", this.form).then(res => {
           console.log(res)
           if (res.code === '0') {
             this.$message({
@@ -227,7 +291,7 @@ export default {
     },
     handleDelete(id) {
       console.log(id)
-      request.delete("/order/" + id).then(res => {
+      request.delete("/orderDetails/" + id).then(res => {
         if (res.code === '0') {
           this.$message({
             type: "success",
@@ -244,9 +308,9 @@ export default {
     },
     handleChange(row) {
       console.log(row)
-      request.put("/order", row).then(res => {
-        console.log(res)
-        this.load() // 刷新表格的数据
+      request.put("/orderDetails", row).then(res => {
+          console.log(res)
+      this.load() // 刷新表格的数据
       })
     },
     handleSizeChange(pageSize) {   // 改变当前每页的个数触发
@@ -256,9 +320,6 @@ export default {
     handleCurrentChange(pageNum) {  // 改变当前页码触发
       this.currentPage = pageNum
       this.load()
-    },
-    backward(){
-      this.$router.push("/orderDetails")
     }
   }
 }

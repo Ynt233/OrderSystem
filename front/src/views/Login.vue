@@ -31,7 +31,7 @@ export default {
   name: "Login",
   data() {
     return {
-      form: {role: 1},
+      form: {role: 2},
       rules: {
         username: [
           {required: true, message: '请输入用户名', trigger: 'blur'},

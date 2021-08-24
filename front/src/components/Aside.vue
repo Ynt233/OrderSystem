@@ -9,7 +9,7 @@
         <template #title>订餐系统</template>
         <el-menu-item index="/user">人员管理</el-menu-item>
       </el-submenu>
-      <el-menu-item index="/order">订单管理</el-menu-item>
+      <el-menu-item index="/orderDetails">订单管理</el-menu-item>
       <el-menu-item index="/mlsw">明炉烧味</el-menu-item>
       <el-menu-item index="/rxcs">热销菜式</el-menu-item>
       <el-menu-item index="/jxcs">今旬菜式</el-menu-item>

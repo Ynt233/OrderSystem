@@ -10,6 +10,7 @@
       <el-input v-model="search" placeholder="请输入关键字" style="width: 20%" clearable></el-input>
       <el-button type="primary" style="margin-left: 5px" @click="load">查询</el-button>
     </div>
+    <!--    表单区域-->
     <el-table
         v-loading="loading"
         :data="tableData"
@@ -38,7 +39,8 @@
       <el-table-column
           prop="price"
           v-model="table.price"
-          label="单价(元)">
+          label="单价(元)"
+          sortable>
       </el-table-column>
       <el-table-column
           prop="amount"
