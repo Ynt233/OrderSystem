@@ -27,17 +27,7 @@ public class OrderController {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    Order order;
 
-    @PostMapping("/getDetails")
-    public Result<?> getDetails(@RequestBody List<OrderDetails> selected) {
-//        System.out.println(LocalDate.now()+"\t");
-//        System.out.println(selected+"\t");
-        order.setOrderDetails(selected);
-        order.setOrderDate(LocalDate.now());
-//        orderMapper.insert(order);
-        return Result.success();
-    }
 
     @GetMapping("/all")
     public Result<?> findAll() {
@@ -53,6 +43,7 @@ public class OrderController {
             wrapper.like(Order::getDepartment, search);
         }
         Page<Order> OrderPage = orderMapper.selectPage(new Page<>(pageNum,pageSize), wrapper);
+//        Page<Order> OrderPage = orderMapper.findPage(new Page<>(pageNum,pageSize));
         return Result.success(OrderPage);
     }
 }

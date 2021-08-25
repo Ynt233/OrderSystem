@@ -4,8 +4,9 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import javax.persistence.*;
 import lombok.Data;
+
+import java.util.List;
 
 @TableName("t_user")
 @Data
@@ -28,7 +29,9 @@ public class User {
 
     private Integer role;
 
-    public User(Integer id, String name, String gender, String department, Long phoneNumber, String username, String password, Integer role) {
+    private List<Order> order;
+
+    public User(Integer id, String name, String gender, String department, Long phoneNumber, String username, String password, Integer role, List<Order> order) {
         this.id = id;
         this.name = name;
         this.gender = gender;
@@ -37,6 +40,7 @@ public class User {
         this.username = username;
         this.password = password;
         this.role = role;
+        this.order = order;
     }
 
     public User(){};
@@ -113,13 +117,26 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
+    public List<Order> getOrder() {
+        return order;
+    }
+
+    public void setOrder(List<Order> order) {
+        this.order = order;
+    }
+
     @Override
     public String toString() {
         return "User{" +
-                "姓名='" + name + '\'' +
-                ", 性别='" + gender + '\'' +
-                ", 部门='" + department + '\'' +
-                ", 手机号码=" + phoneNumber +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", gender='" + gender + '\'' +
+                ", department='" + department + '\'' +
+                ", phoneNumber=" + phoneNumber +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", role=" + role +
+                ", order=" + order +
                 '}';
     }
 }

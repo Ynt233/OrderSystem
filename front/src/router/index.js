@@ -63,11 +63,11 @@ const routes = [
                 name: 'Order',
                 component: () => import("../views/Order")
             },
-            {
-                path: 'account',
-                name: 'Account',
-                component: () => import("../views/Account")
-            }
+            // {
+            //     path: 'account',
+            //     name: 'Account',
+            //     component: () => import("../views/Account")
+            // }
         ]
     },
     {

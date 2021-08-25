@@ -18,17 +18,22 @@ public class Order {
     @TableField(value = "order_date")
     private LocalDate orderDate;
 
-    @TableField(value = "staff_name")
-    private String staffName;
+    @TableField(value = "user_id")
+    private Integer userId;
+
+    @TableField(value = "user_name")
+    private String userName;
 
     private String department;
 
+    @TableField(exist = false)
     private List<OrderDetails> orderDetails;
 
-    public Order(Integer id, LocalDate orderDate, String staffName, String department, List<OrderDetails> orderDetails) {
+    public Order(Integer id, LocalDate orderDate, Integer userId, String userName, String department, List<OrderDetails> orderDetails) {
         this.id = id;
-        this.orderDate = orderDate;
-        this.staffName = staffName;
+        this.orderDate = LocalDate.now();
+        this.userId = userId;
+        this.userName = userName;
         this.department = department;
         this.orderDetails = orderDetails;
     }
@@ -49,12 +54,20 @@ public class Order {
         this.orderDate = orderDate;
     }
 
-    public String getstaffName() {
-        return staffName;
+    public Integer getuserId() {
+        return userId;
     }
 
-    public void setstaffName(String staffName) {
-        this.staffName = staffName;
+    public void setuserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getDepartment() {
@@ -78,7 +91,8 @@ public class Order {
         return "Order{" +
                 "id=" + id +
                 ", orderDate=" + orderDate +
-                ", staffName='" + staffName + '\'' +
+                ", userId='" + userId + '\'' +
+                ", userName='" + userName + '\'' +
                 ", department='" + department + '\'' +
                 ", orderDetails=" + orderDetails +
                 '}';

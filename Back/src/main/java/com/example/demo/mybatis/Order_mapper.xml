@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper>
+    <resultMap id="orderMap" type="com/example/demo/entity/Order.java">
+        <result property="id" column="id"></result>
+        <result property="orderDate" column="orderDate"></result>
+        <collection property="orderDetails" javaType="ArrayList" ofType="com/example/demo/entity/OrderDetails.java">
+            <result property="id" column="id"></result>
+            <result property="foodName" column="food_name"></result>
+            <result property="amount" column="amount"></result>
+            <result property="price" column="price"></result>
+        </collection>
+    </resultMap>
+    
+    <select id="findPage" resultMap="orderMap">
+        select ordersystem.t_order.*, ordersystem.t_order_details.id, ordersystem.t_order_details.food_name, ordersystem.t_order_details.amount, ordersystem.t_order_details.price
+        from ordersystem.t_order left join ordersystem.t_order_details on t_order.id = ordersystem.t_order_details.order_id
+    </select>
+</mapper>
