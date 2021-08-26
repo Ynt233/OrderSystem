@@ -6,8 +6,6 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
-import java.math.BigDecimal;
-
 @Data
 @TableName("t_order_details")
 public class OrderDetails {
@@ -17,7 +15,7 @@ public class OrderDetails {
     @TableField(value = "food_name")
     private String foodName;
 
-    private BigDecimal price;
+    private double price;
 
     private String type;
 
@@ -27,7 +25,7 @@ public class OrderDetails {
 
     private Integer orderId;
 
-    public OrderDetails(Integer id, String foodName, BigDecimal price, String type, Integer amount, String tip, Integer orderId) {
+    public OrderDetails(Integer id, String foodName, double price, String type, Integer amount, String tip, Integer orderId) {
         this.id = id;
         this.foodName = foodName;
         this.price = price;
@@ -57,11 +55,11 @@ public class OrderDetails {
         this.foodName = foodName;
     }
 
-    public BigDecimal getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 

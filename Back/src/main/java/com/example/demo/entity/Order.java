@@ -26,15 +26,18 @@ public class Order {
 
     private String department;
 
+    private double totalPrice;
+
     @TableField(exist = false)
     private List<OrderDetails> orderDetails;
 
-    public Order(Integer id, LocalDate orderDate, Integer userId, String userName, String department, List<OrderDetails> orderDetails) {
+    public Order(Integer id, LocalDate orderDate, Integer userId, String userName, String department, double totalPrice, List<OrderDetails> orderDetails) {
         this.id = id;
         this.orderDate = orderDate;
         this.userId = userId;
         this.userName = userName;
         this.department = department;
+        this.totalPrice = totalPrice;
         this.orderDetails = orderDetails;
     }
 
@@ -80,6 +83,14 @@ public class Order {
 
     public void setDepartment(String department) {
         this.department = department;
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
     }
 
     public List<OrderDetails> getOrderDetails() {

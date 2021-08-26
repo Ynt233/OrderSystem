@@ -35,11 +35,11 @@
 
           </el-table-column>
           <el-table-column
-              prop="foodName"
+              prop="orderDate"
               label="订餐日期">
           </el-table-column>
           <el-table-column
-              prop="total"
+              prop="totalPrice"
               label="总价">
           </el-table-column>
           <!--      <el-table-column-->
@@ -151,6 +151,7 @@ export default {
       }).then(res => {
         this.loading = false
         this.tableData = res.data.records
+        console.log(this.tableData)
         this.total = res.data.total
       })
     },
@@ -161,14 +162,9 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
-      var total = 0;
       for (var i = 0; i < this.multipleSelection.length; i++){
         var halo = this.multipleSelection[i];
-        //console.log(halo);
-        total = total + halo.price * halo.amount;
       }
-      this.total_price = total;
-      console.log(this.total_price);
       // console.log(val)
     },
     dialogFormAdd(){

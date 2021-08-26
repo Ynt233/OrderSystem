@@ -12,7 +12,7 @@
     </div>
 
     <el-collapse v-model="activeNames">
-      <el-collapse-item title="订单1" name="1">
+      <el-collapse-item title="我的订单" name="order">
         <el-table
             v-loading="loading"
             ref="multipleTable"

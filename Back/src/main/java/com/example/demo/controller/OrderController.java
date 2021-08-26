@@ -13,7 +13,6 @@ import com.example.demo.mapper.OrderMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
-import sun.security.util.AuthResources_fr;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
@@ -37,10 +36,12 @@ public class OrderController {
         order.setOrderDetails(selected);
         order.setOrderDate(LocalDate.now());
         orderMapper.insert(order);
-        //为选中的orderDetails赋上order的id，从而order可进行多表查询
+        double total = 0.00;
+        //为选中的orderDetails赋上order的id，从而order可进行多表查询,顺便计算总价
         List row = jdbcTemplate.queryForList("select * from ordersystem.t_order_details;");
         Iterator it = row.iterator();
         for (int i = 0; i < selected.size(); i++){
+            total += selected.get(i).getPrice() * selected.get(i).getAmount();
             while (it.hasNext()){
                 Map foodMap = (Map) it.next();
                 Integer foodAmount = Integer.parseInt(foodMap.get("amount").toString());
@@ -55,12 +56,24 @@ public class OrderController {
                 }
             }
         }
+        order.setTotalPrice(total);
+        System.out.println("-----------------------------");
+        System.out.println(order.getId());
+        System.out.println(order.getTotalPrice());
+        String sql_total = "update ordersystem.t_order set `total_price`=? where id=?";
+        Object totalObj[] = new Object[] {order.getTotalPrice(), order.getId()};
+        jdbcTemplate.update(sql_total,totalObj);
         return Result.success();
     }
 
     @GetMapping("/{id}")
     public Result<?> getById(@PathVariable Long id) {
         return Result.success(orderMapper.selectById(id));
+    }
+
+    @GetMapping("/all")
+    public Result<?> findAll() {
+        return Result.success(orderMapper.selectList(null));
     }
 
     @DeleteMapping("/{id}")
