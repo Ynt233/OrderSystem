@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.common.Result;
 import com.example.demo.entity.Food;
 import com.example.demo.mapper.FoodMapper;
-import com.example.demo.mapper.FoodMapper;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;

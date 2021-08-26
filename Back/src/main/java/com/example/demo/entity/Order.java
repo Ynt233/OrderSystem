@@ -31,11 +31,15 @@ public class Order {
 
     public Order(Integer id, LocalDate orderDate, Integer userId, String userName, String department, List<OrderDetails> orderDetails) {
         this.id = id;
-        this.orderDate = LocalDate.now();
+        this.orderDate = orderDate;
         this.userId = userId;
         this.userName = userName;
         this.department = department;
         this.orderDetails = orderDetails;
+    }
+
+    public Order() {
+
     }
 
     public Integer getId() {

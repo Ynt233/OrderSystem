@@ -25,13 +25,20 @@ public class OrderDetails {
 
     private String tip;
 
-    public OrderDetails(Integer id, String foodName, BigDecimal price, String type, Integer amount, String tip) {
+    private Integer orderId;
+
+    public OrderDetails(Integer id, String foodName, BigDecimal price, String type, Integer amount, String tip, Integer orderId) {
         this.id = id;
         this.foodName = foodName;
         this.price = price;
         this.type = type;
         this.amount = amount;
         this.tip = tip;
+        this.orderId = orderId;
+    }
+
+    public OrderDetails() {
+
     }
 
     public Integer getId() {
@@ -80,5 +87,26 @@ public class OrderDetails {
 
     public void setTip(String tip) {
         this.tip = tip;
+    }
+
+    public Integer getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
+    }
+
+    @Override
+    public String toString() {
+        return "OrderDetails{" +
+                "id=" + id +
+                ", foodName='" + foodName + '\'' +
+                ", price=" + price +
+                ", type='" + type + '\'' +
+                ", amount=" + amount +
+                ", tip='" + tip + '\'' +
+                ", orderId=" + orderId +
+                '}';
     }
 }

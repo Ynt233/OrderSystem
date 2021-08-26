@@ -68,7 +68,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public Result<?> getById(@PathVariable Long id) {
+    public Result<?> getById(@PathVariable Integer id) {
         return Result.success(userMapper.selectById(id));
     }
 
@@ -80,13 +80,14 @@ public class UserController {
     @GetMapping
     public Result<?> findPage(@RequestParam(defaultValue = "1") Integer pageNum,
                               @RequestParam(defaultValue = "10") Integer pageSize,
-                              @RequestParam(defaultValue = "") String search){
+                              @RequestParam(defaultValue = "") String search
+                              ){
         LambdaQueryWrapper<User> wrapper = Wrappers.<User>lambdaQuery();
         if(StrUtil.isNotBlank(search)){
             wrapper.like(User::getName, search);
         }
-//        Page<User> userPage = userMapper.selectPage(new Page<>(pageNum,pageSize), wrapper);
-        Page<User> userPage = userMapper.userFindPage(new Page<>(pageNum,pageSize));
+        Page<User> userPage = userMapper.selectPage(new Page<>(pageNum,pageSize), wrapper);
+//        Page<User> userPage = userMapper.findPage(new Page<>(pageNum, pageSize));
         return Result.success(userPage);
     }
 }

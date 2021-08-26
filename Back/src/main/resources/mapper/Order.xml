@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.OrderMapper">
+    <resultMap id="orderMap" type="com.example.demo.entity.Order">
+        <id property="id" column="id"/>
+        <result property="orderDate" column="order_date"/>
+        <result property="userId" column="user_id"/>
+        <result property="department" column="department"/>
+        <result property="detailsId" column="details_id"/>
+
+        <collection property="orderDetails" javaType="ArrayList" ofType="com.example.demo.entity.OrderDetails">
+            <id property="id" column="od_id"/>
+            <result property="foodName" column="food_name"/>
+            <result property="type" column="type"/>
+            <result property="amount" column="amount"/>
+            <result property="price" column="price"/>
+            <result property="tip" column="tip"/>
+        </collection>
+    </resultMap>
+    
+    <select id="findPage" resultMap="orderMap">
+        select ordersystem.t_order.*,
+               ordersystem.t_order_details.id od_id,
+               ordersystem.t_order_details.food_name food_name,
+               ordersystem.t_order_details.type type,
+               ordersystem.t_order_details.amount amount,
+               ordersystem.t_order_details.price price,
+               ordersystem.t_order_details.tip tip
+        from ordersystem.t_order
+        left join ordersystem.t_order_details on t_order.id = ordersystem.t_order_details.order_id
+
+    </select>
+
+    <select id="findByDetailsId" resultType="com.example.demo.entity.OrderDetails">
+        select ordersystem.t_order_details.*
+        from ordersystem.t_order_details
+        where ordersystem.t_order_details.id = #{DetailsId}
+    </select>
+</mapper>

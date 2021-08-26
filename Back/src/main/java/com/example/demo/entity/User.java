@@ -29,6 +29,7 @@ public class User {
 
     private Integer role;
 
+    @TableField(exist = false)
     private List<Order> order;
 
     public User(Integer id, String name, String gender, String department, Long phoneNumber, String username, String password, Integer role, List<Order> order) {

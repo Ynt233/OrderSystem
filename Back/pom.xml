@@ -57,7 +57,16 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.26</version>
 		</dependency>
-
+<!--		<dependency>-->
+<!--			<groupId>org.mybatis</groupId>-->
+<!--			<artifactId>mybatis</artifactId>-->
+<!--			<version>3.5.7</version>-->
+<!--		</dependency>-->
+<!--		<dependency>-->
+<!--			<groupId>junit</groupId>-->
+<!--			<artifactId>junit</artifactId>-->
+<!--			<scope>test</scope>-->
+<!--		</dependency>-->
 	</dependencies>
 
 	<build>

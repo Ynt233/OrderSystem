@@ -31,28 +31,16 @@
               sortable
               v-if="user.role === 1">
           </el-table-column>
+          <el-table-column>
+
+          </el-table-column>
           <el-table-column
               prop="foodName"
-              label="商品名称">
+              label="订餐日期">
           </el-table-column>
           <el-table-column
-              prop="type"
-              label="商品类型">
-          </el-table-column>
-          <el-table-column
-              prop="price"
-              label="单价(元)">
-          </el-table-column>
-          <el-table-column
-              prop="amount"
-              label="数量">
-            <template #default="scope">
-              <el-input-number name="cart" v-model="scope.row.amount" @change="handleChange(scope.row)" :min="1" :max="100" label="描述文字"></el-input-number>
-            </template>
-          </el-table-column>
-          <el-table-column
-              prop="tip"
-              label="备注">
+              prop="total"
+              label="总价">
           </el-table-column>
           <!--      <el-table-column-->
           <!--          prop="createTime"-->
@@ -60,7 +48,7 @@
           <!--      </el-table-column>-->
           <el-table-column label="操作">
             <template #default="scope">
-              <el-button size="mini" @click="handleEdit(scope.row)">编辑备注</el-button>
+              <el-button size="mini" @click="showOrderDetails(scope.row.orderDetails)">查看订单详情</el-button>
               <el-popconfirm title="确定删除吗？" @confirm="handleDelete(scope.row.id)" v-if="user.role === 1">
                 <template #reference>
                   <el-button size="mini" type="danger">删除</el-button>
@@ -79,6 +67,16 @@
         </div>
       </el-collapse-item>
     </el-collapse>
+
+    <el-dialog title="订单详情" v-model="orderDetailsVis" width="50%" height="50%">
+      <el-table :data="orderDetails" stripe border>
+        <el-table-column prop="foodName" label="商品名称"></el-table-column>
+        <el-table-column prop="type" label="商品类型"></el-table-column>
+        <el-table-column prop="amount" label="数量"></el-table-column>
+        <el-table-column prop="price" label="价格"></el-table-column>
+        <el-table-column prop="tip" label="备注"></el-table-column>
+      </el-table>
+    </el-dialog>
 
     <div style="margin: 10px 0">
       <el-pagination
@@ -120,6 +118,8 @@ export default {
       multipleSelection: [],
       activeNames: ['1'],
       amount: 1,
+      orderDetails: [],
+      orderDetailsVis: false,
       filesUploadUrl: "http://" + window.server.filesUploadUrl + ":9090/files/upload"
     }
   },
@@ -153,6 +153,11 @@ export default {
         this.tableData = res.data.records
         this.total = res.data.total
       })
+    },
+    showOrderDetails(orderDetails){
+      this.orderDetails = orderDetails;
+      console.log(this.orderDetails)
+      this.orderDetailsVis = true;
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;

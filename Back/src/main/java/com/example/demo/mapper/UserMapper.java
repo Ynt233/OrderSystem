@@ -5,5 +5,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.entity.User;
 
 public interface UserMapper extends BaseMapper<User> {
-    Page<User> userFindPage(Page<User> page);
+    Page<User> findPage(Page<User> page);
+
 }

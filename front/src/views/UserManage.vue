@@ -124,6 +124,7 @@ export default {
   },
   data() {
     return {
+      user: {},
       loading: true,
       form: {},
       dialogVisible: false,
@@ -151,6 +152,9 @@ export default {
     }
   },
   created() {
+    let userStr = sessionStorage.getItem("user") || "{}"
+    this.user = JSON.parse(userStr)
+    console.log(this.user)
     this.load()
   },
   methods: {
@@ -160,7 +164,8 @@ export default {
         params: {
           pageNum: this.currentPage,
           pageSize: this.pageSize,
-          search: this.search
+          search: this.search,
+          userId: this.user.id
         }
       }).then(res => {
         this.loading = false
