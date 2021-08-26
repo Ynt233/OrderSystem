@@ -168,6 +168,7 @@ export default {
       }
     })
     this.load();
+    this.getUser();
     this.addDate();
   },
   methods: {
@@ -187,6 +188,17 @@ export default {
         this.loading = false
         this.tableData = res.data.records
         this.total = res.data.total
+      })
+    },
+    getUser(){
+      // console.log(this.user);
+      request.post("/order/getUser", this.user).then(res => {
+        if (res.code === '1'){
+          this.$message({
+            type: "error",
+            message: res.msg
+          })
+        }
       })
     },
     handleSelectionChange(val) {

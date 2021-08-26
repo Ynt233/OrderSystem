@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.demo.common.Result;
 import com.example.demo.entity.Order;
 import com.example.demo.entity.OrderDetails;
-import com.example.demo.mapper.OrderDetailsMapper;
+import com.example.demo.entity.User;
 import com.example.demo.mapper.OrderMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,16 +23,23 @@ import java.util.*;
 public class OrderController {
     @Resource
     OrderMapper orderMapper;
-    OrderDetailsMapper orderDetailsMapper;
+    Order order = new Order();
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @PostMapping("/getUser")
+    public Result<?> getUser(@RequestBody User user){
+        order.setuserId(user.getId());
+        order.setDepartment(user.getDepartment());
+        System.out.println(order.getDepartment());
+        return Result.success();
+    }
+
+    //将order和orderDetails关联起来，使订单页可以看到自己的购物信列表
     @PostMapping("/getDetails")
     public Result<?> getDetails(@RequestBody List<OrderDetails> selected){
-        Order order = new Order();
         OrderDetails orderDetails = new OrderDetails();
-
         order.setOrderDetails(selected);
         order.setOrderDate(LocalDate.now());
         orderMapper.insert(order);

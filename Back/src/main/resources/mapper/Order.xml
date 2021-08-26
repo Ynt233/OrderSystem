@@ -29,6 +29,7 @@
                ordersystem.t_order_details.tip tip
         from ordersystem.t_order
         left join ordersystem.t_order_details on t_order.id = ordersystem.t_order_details.order_id
+        left join ordersystem.t_user tu on tu.id = t_order.user_id
 
     </select>
 
