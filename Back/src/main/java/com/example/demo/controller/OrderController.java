@@ -35,23 +35,15 @@ public class OrderController {
         OrderDetails orderDetails = new OrderDetails();
 
         order.setOrderDetails(selected);
-        System.out.println(order.getOrderDetails());
         order.setOrderDate(LocalDate.now());
         orderMapper.insert(order);
-
+        //为选中的orderDetails赋上order的id，从而order可进行多表查询
         List row = jdbcTemplate.queryForList("select * from ordersystem.t_order_details;");
         Iterator it = row.iterator();
         for (int i = 0; i < selected.size(); i++){
             while (it.hasNext()){
                 Map foodMap = (Map) it.next();
                 Integer foodAmount = Integer.parseInt(foodMap.get("amount").toString());
-                System.out.println("---------------------------------------");
-                System.out.println("我进来了");
-                System.out.println(foodMap.get("food_name")+"和"+selected.get(i).getFoodName());
-                System.out.println(foodMap.get("food_name").equals(selected.get(i).getFoodName()));
-                System.out.println(foodAmount == selected.get(i).getAmount());
-                System.out.println(foodMap.get("tip").equals(selected.get(i).getTip()));
-                System.out.println(selected.get(i).getId());
                 if (foodMap.get("food_name").equals(selected.get(i).getFoodName()) && foodAmount == selected.get(i).getAmount() || (foodMap.get("tip").equals(selected.get(i).getTip()) || foodMap.get("tip") == null)){
                     orderDetails.setOrderId(order.getId());
                     orderDetails.setFoodName(selected.get(i).getFoodName());
@@ -59,7 +51,6 @@ public class OrderController {
                     String sql = "update ordersystem.t_order_details set `order_id`=? where food_name=? and amount=?";
                     Object foodObj[] = new Object[] {orderDetails.getOrderId(), orderDetails.getFoodName(), orderDetails.getAmount()};
                     jdbcTemplate.update(sql,foodObj);
-                    System.out.println("我执行了");
                     break;
                 }
             }
