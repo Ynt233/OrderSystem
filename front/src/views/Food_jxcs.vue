@@ -163,6 +163,7 @@ export default {
       }
     })
     this.load()
+    this.getUser()
   },
   methods: {
     filesUploadSuccess(res) {
@@ -184,6 +185,16 @@ export default {
         this.loading = false
         this.tableData = res.data.records
         this.total = res.data.total
+      })
+    },
+    getUser(){
+      request.post("/orderDetails/getUser",this.user).then(res => {
+        if (res.code === '1'){
+          this.$message({
+            type: "error",
+            message: res.msg
+          })
+        }
       })
     },
     addDate(){
