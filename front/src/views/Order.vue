@@ -7,6 +7,14 @@
 
     <!--    搜索区域-->
     <div style="margin: 10px 0">
+      <el-date-picker
+          v-model="date"
+          type="date"
+          placeholder="选择日期"
+          :disabled-date="disabledDate"
+          :shortcuts="shortcuts"
+      >
+      </el-date-picker>
       <el-input v-model="search" placeholder="请输入关键字" style="width: 20%" clearable></el-input>
       <el-button type="primary" style="margin-left: 5px" @click="load">查询</el-button>
     </div>
@@ -120,6 +128,28 @@ export default {
       amount: 1,
       orderDetails: [],
       orderDetailsVis: false,
+      date: '',
+      disabledDate(time) {
+        return time.getTime() > Date.now()
+      },
+      shortcuts: [{
+        text: 'Today',
+        value: new Date(),
+      }, {
+        text: 'Yesterday',
+        value: () => {
+          const date = new Date()
+          date.setTime(date.getTime() - 3600 * 1000 * 24)
+          return date
+        },
+      }, {
+        text: 'A week ago',
+        value: () => {
+          const date = new Date()
+          date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
+          return date
+        },
+      }],
       filesUploadUrl: "http://" + window.server.filesUploadUrl + ":9090/files/upload"
     }
   },
@@ -142,16 +172,18 @@ export default {
     // },
     load() {
       this.loading = true
+      console.log(typeof(parseInt(this.user.id.type)))
       request.get("/order", {
         params: {
           pageNum: this.currentPage,
           pageSize: this.pageSize,
-          search: this.search
+          search: this.date,
+          userId: parseInt(this.user.id)
         }
       }).then(res => {
         this.loading = false
         this.tableData = res.data.records
-        console.log(this.tableData)
+        // console.log(this.tableData)
         this.total = res.data.total
       })
     },

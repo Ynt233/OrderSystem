@@ -11,73 +11,68 @@
       <el-button type="primary" style="margin-left: 5px" @click="load">查询</el-button>
     </div>
 
-    <el-collapse v-model="activeNames">
-      <el-collapse-item title="我的订单" name="order">
-        <el-table
-            v-loading="loading"
-            ref="multipleTable"
-            @selection-change="handleSelectionChange"
-            :data="tableData"
-            border
-            stripe
-            style="width: 100%">
-          <el-table-column
-              type="selection"
-              width="55">
-          </el-table-column>
-          <el-table-column
-              prop="id"
-              label="ID"
-              sortable
+    <el-table
+        v-loading="loading"
+        ref="multipleTable"
+        @selection-change="handleSelectionChange"
+        :data="tableData"
+        border
+        stripe
+        style="width: 100%">
+      <el-table-column
+          type="selection"
+          width="55">
+      </el-table-column>
+      <el-table-column
+          prop="id"
+          label="ID"
+          sortable
           v-if="user.role === 1">
-          </el-table-column>
-          <el-table-column
-              prop="foodName"
-              label="商品名称">
-          </el-table-column>
-          <el-table-column
-              prop="type"
-              label="商品类型">
-          </el-table-column>
-          <el-table-column
-              prop="price"
-              label="单价(元)">
-          </el-table-column>
-          <el-table-column
-              prop="amount"
-              label="数量">
-            <template #default="scope">
-              <el-input-number name="cart" v-model="scope.row.amount" @change="handleChange(scope.row)" :min="1" :max="100" label="描述文字"></el-input-number>
+      </el-table-column>
+      <el-table-column
+          prop="foodName"
+          label="商品名称">
+      </el-table-column>
+      <el-table-column
+          prop="type"
+          label="商品类型">
+      </el-table-column>
+      <el-table-column
+          prop="price"
+          label="单价(元)">
+      </el-table-column>
+      <el-table-column
+          prop="amount"
+          label="数量">
+        <template #default="scope">
+          <el-input-number name="cart" v-model="scope.row.amount" @change="handleChange(scope.row)" :min="1" :max="100" label="描述文字"></el-input-number>
+        </template>
+      </el-table-column>
+      <el-table-column
+          prop="tip"
+          label="备注">
+      </el-table-column>
+      <!--      <el-table-column-->
+      <!--          prop="createTime"-->
+      <!--          label="时间">-->
+      <!--      </el-table-column>-->
+      <el-table-column label="操作">
+        <template #default="scope">
+          <el-button size="mini" @click="handleEdit(scope.row)">编辑备注</el-button>
+          <el-popconfirm title="确定删除吗？" @confirm="handleDelete(scope.row.id)" v-if="user.role === 1">
+            <template #reference>
+              <el-button size="mini" type="danger">删除</el-button>
             </template>
-          </el-table-column>
-          <el-table-column
-              prop="tip"
-              label="备注">
-          </el-table-column>
-          <!--      <el-table-column-->
-          <!--          prop="createTime"-->
-          <!--          label="时间">-->
-          <!--      </el-table-column>-->
-          <el-table-column label="操作">
-            <template #default="scope">
-              <el-button size="mini" @click="handleEdit(scope.row)">编辑备注</el-button>
-              <el-popconfirm title="确定删除吗？" @confirm="handleDelete(scope.row.id)" v-if="user.role === 1">
-                <template #reference>
-                  <el-button size="mini" type="danger">删除</el-button>
-                </template>
-              </el-popconfirm>
-            </template>
-          </el-table-column>
-        </el-table>
-        <el-divider></el-divider>
-        <div style="margin: 10px 0">
-<!--          <el-svg-icon><goods /></el-svg-icon>-->
-          <label>共计：</label>
-          <span>{{this.total_price}}元</span>
-          <el-button @click="dialogFormAdd" style="float: right; margin-top: -25px ;margin-right: 75px" type="primary">结算</el-button>
-        </div>
-      </el-collapse-item>
-    </el-collapse>
+          </el-popconfirm>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-divider></el-divider>
+    <div style="margin: 10px 0">
+      <label>共计：</label>
+      <span>{{this.total_price}}元</span>
+      <el-button @click="dialogFormAdd" style="float: right; margin-top: -25px ;margin-right: 75px" type="primary">结算</el-button>
+    </div>
 
     <div style="margin: 10px 0">
       <el-pagination
@@ -142,6 +137,7 @@ export default {
       user: {},
       loading: true,
       form: {},
+      tableVisible: true,
       dialogVisible: false,
       search: '',
       textarea: {},
@@ -182,7 +178,8 @@ export default {
         params: {
           pageNum: this.currentPage,
           pageSize: this.pageSize,
-          search: this.search
+          search: this.search,
+          userId: parseInt(this.user.id)
         }
       }).then(res => {
         this.loading = false

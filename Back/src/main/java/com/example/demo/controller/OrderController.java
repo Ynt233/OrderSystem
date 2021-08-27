@@ -9,6 +9,7 @@ import com.example.demo.common.Result;
 import com.example.demo.entity.Order;
 import com.example.demo.entity.OrderDetails;
 import com.example.demo.entity.User;
+import com.example.demo.mapper.OrderDetailsMapper;
 import com.example.demo.mapper.OrderMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @RestController
@@ -23,6 +25,7 @@ import java.util.*;
 public class OrderController {
     @Resource
     OrderMapper orderMapper;
+    OrderDetailsMapper orderDetailsMapper;
     Order order = new Order();
 
     @Autowired
@@ -32,6 +35,7 @@ public class OrderController {
     public Result<?> getUser(@RequestBody User user){
         order.setuserId(user.getId());
         order.setDepartment(user.getDepartment());
+        order.setUserName(user.getName());
         System.out.println(order.getDepartment());
         return Result.success();
     }
@@ -39,6 +43,7 @@ public class OrderController {
     //将order和orderDetails关联起来，使订单页可以看到自己的购物信列表
     @PostMapping("/getDetails")
     public Result<?> getDetails(@RequestBody List<OrderDetails> selected){
+        //因为id是自动生成的，所以需要先插入一个order对象,不然会报null的错
         OrderDetails orderDetails = new OrderDetails();
         order.setOrderDetails(selected);
         order.setOrderDate(LocalDate.now());
@@ -98,14 +103,15 @@ public class OrderController {
     @GetMapping
     public Result<?> findPage(@RequestParam(defaultValue = "1") Integer pageNum,
                               @RequestParam(defaultValue = "10") Integer pageSize,
-                              @RequestParam(defaultValue = "") String search){
+                              @RequestParam(defaultValue = "") String search,
+                              @RequestParam Integer userId){
         LambdaQueryWrapper<Order> wrapper = Wrappers.<Order>lambdaQuery();
+        System.out.println();
         if(StrUtil.isNotBlank(search)){
-            wrapper.like(Order::getDepartment, search);
+            wrapper.like(Order::getOrderDate, search);
         }
-
 //        Page<Order> OrderPage = orderMapper.selectPage(new Page<>(pageNum,pageSize), wrapper);
-        Page<Order> OrderPage = orderMapper.findPage(new Page<>(pageNum,pageSize));
+        Page<Order> OrderPage = orderMapper.findPage(new Page<>(pageNum,pageSize), userId);
         return Result.success(OrderPage);
     }
 }

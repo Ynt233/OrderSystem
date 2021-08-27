@@ -25,7 +25,9 @@ public class OrderDetails {
 
     private Integer orderId;
 
-    public OrderDetails(Integer id, String foodName, double price, String type, Integer amount, String tip, Integer orderId) {
+    private Integer userId;
+
+    public OrderDetails(Integer id, String foodName, double price, String type, Integer amount, String tip, Integer orderId, Integer userId) {
         this.id = id;
         this.foodName = foodName;
         this.price = price;
@@ -33,6 +35,7 @@ public class OrderDetails {
         this.amount = amount;
         this.tip = tip;
         this.orderId = orderId;
+        this.userId = userId;
     }
 
     public OrderDetails() {
@@ -93,6 +96,14 @@ public class OrderDetails {
 
     public void setOrderId(Integer orderId) {
         this.orderId = orderId;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     @Override
